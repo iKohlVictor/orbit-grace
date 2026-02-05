@@ -1,11 +1,47 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+import { useNavigate, useOutletContext } from "react-router-dom";
+import { motion } from "framer-motion";
+import { systems, type SystemConfig } from "@/data/systems";
+import { SystemCard } from "@/components/SystemCard";
+
+interface ShellContext {
+  activeSystem: SystemConfig | null;
+  setActiveSystem: (sys: SystemConfig | null) => void;
+}
 
 const Index = () => {
+  const navigate = useNavigate();
+  const { setActiveSystem } = useOutletContext<ShellContext>();
+
+  const handleOpenSystem = (sys: SystemConfig) => {
+    setActiveSystem(sys);
+    navigate(sys.groups[0]?.items[0]?.path ?? "/");
+  };
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background">
-      <div className="text-center">
-        <h1 className="mb-4 text-4xl font-bold">Welcome to Your Blank App</h1>
-        <p className="text-xl text-muted-foreground">Start building your amazing project here!</p>
+    <div className="p-6 md:p-10 max-w-5xl mx-auto">
+      <motion.div
+        initial={{ opacity: 0, y: -8 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.3 }}
+        className="mb-8"
+      >
+        <h1 className="font-display text-2xl md:text-3xl font-bold mb-2">
+          Bem-vindo de volta 👋
+        </h1>
+        <p className="text-muted-foreground">
+          Selecione um sistema para começar.
+        </p>
+      </motion.div>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        {systems.map((sys, i) => (
+          <SystemCard
+            key={sys.id}
+            system={sys}
+            index={i}
+            onClick={() => handleOpenSystem(sys)}
+          />
+        ))}
       </div>
     </div>
   );
