@@ -1,13 +1,22 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { Search, Plus, MoreHorizontal, Settings2, ChevronDown, ChevronRight, Building2, MapPin } from "lucide-react";
+import {
+  Search,
+  Plus,
+  MoreHorizontal,
+  Settings2,
+  ChevronDown,
+  ChevronRight,
+  MapPin,
+  Power,
+  Filter,
+} from "lucide-react";
 import { systems } from "@/data/systems";
 import {
   mockUsers,
   mockBranches,
   mockRegionals,
-  getRoleLabel,
   type MockUser,
 } from "@/data/mock-users";
 import { UserRoleBadge } from "@/components/UserRoleBadge";
@@ -29,6 +38,24 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import { toast } from "sonner";
 
 function UserExpandedRow({ user }: { user: MockUser }) {
   const activeAccesses = user.accesses.filter((a) => a.role);
@@ -49,21 +76,17 @@ function UserExpandedRow({ user }: { user: MockUser }) {
 
         const branchesByRegional = mockRegionals
           .map((regional) => {
-            const branches = mockBranches
-              .filter(
-                (b) =>
-                  b.regionalId === regional.id &&
-                  access.branches.includes(b.id)
-              );
+            const branches = mockBranches.filter(
+              (b) =>
+                b.regionalId === regional.id &&
+                access.branches.includes(b.id)
+            );
             return { regional, branches };
           })
           .filter((g) => g.branches.length > 0);
 
         return (
-          <div
-            key={access.systemId}
-            className="rounded-md border overflow-hidden"
-          >
+          <div key={access.systemId} className="rounded-md border overflow-hidden">
             <div
               className="flex items-center gap-2 px-3 py-2 border-b"
               style={{
@@ -119,19 +142,88 @@ function UserExpandedRow({ user }: { user: MockUser }) {
 
 export default function UsersPage() {
   const navigate = useNavigate();
-  const [users] = useState<MockUser[]>(mockUsers);
+  const [users, setUsers] = useState<MockUser[]>(mockUsers);
   const [search, setSearch] = useState("");
   const [expandedUser, setExpandedUser] = useState<string | null>(null);
 
-  const filtered = users.filter(
-    (u) =>
+  // Filters
+  const [filterSystem, setFilterSystem] = useState<string>("all");
+  const [filterRegional, setFilterRegional] = useState<string>("all");
+  const [filterBranch, setFilterBranch] = useState<string>("all");
+  const [filterStatus, setFilterStatus] = useState<string>("all");
+
+  // Toggle status modal
+  const [toggleTarget, setToggleTarget] = useState<MockUser | null>(null);
+
+  const availableBranches =
+    filterRegional === "all"
+      ? mockBranches
+      : mockBranches.filter((b) => b.regionalId === filterRegional);
+
+  const filtered = users.filter((u) => {
+    const matchesSearch =
       u.name.toLowerCase().includes(search.toLowerCase()) ||
-      u.email.toLowerCase().includes(search.toLowerCase())
-  );
+      u.email.toLowerCase().includes(search.toLowerCase());
+
+    const matchesStatus =
+      filterStatus === "all" || u.status === filterStatus;
+
+    const matchesSystem =
+      filterSystem === "all" ||
+      u.accesses.some((a) => a.systemId === filterSystem && a.role);
+
+    const matchesRegional =
+      filterRegional === "all" ||
+      u.accesses.some((a) =>
+        a.role &&
+        a.branches.some((bId) => {
+          const branch = mockBranches.find((b) => b.id === bId);
+          return branch?.regionalId === filterRegional;
+        })
+      );
+
+    const matchesBranch =
+      filterBranch === "all" ||
+      u.accesses.some(
+        (a) => a.role && a.branches.includes(filterBranch)
+      );
+
+    return matchesSearch && matchesStatus && matchesSystem && matchesRegional && matchesBranch;
+  });
 
   const toggleExpand = (userId: string, e: React.MouseEvent) => {
     e.stopPropagation();
     setExpandedUser((prev) => (prev === userId ? null : userId));
+  };
+
+  const confirmToggleStatus = () => {
+    if (!toggleTarget) return;
+    setUsers((prev) =>
+      prev.map((u) =>
+        u.id === toggleTarget.id
+          ? { ...u, status: u.status === "active" ? "inactive" : "active" }
+          : u
+      )
+    );
+    toast.success(
+      toggleTarget.status === "active"
+        ? `${toggleTarget.name} foi desativado.`
+        : `${toggleTarget.name} foi ativado.`
+    );
+    setToggleTarget(null);
+  };
+
+  const hasActiveFilters =
+    filterSystem !== "all" ||
+    filterRegional !== "all" ||
+    filterBranch !== "all" ||
+    filterStatus !== "all";
+
+  const clearFilters = () => {
+    setFilterSystem("all");
+    setFilterRegional("all");
+    setFilterBranch("all");
+    setFilterStatus("all");
   };
 
   const totalCols = 3 + systems.length + 1;
@@ -160,14 +252,88 @@ export default function UsersPage() {
           </Button>
         </div>
 
-        <div className="relative max-w-sm mb-6">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-          <Input
-            placeholder="Buscar por nome ou email..."
-            className="pl-9"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-          />
+        {/* Search + Filters */}
+        <div className="space-y-3 mb-6">
+          <div className="relative max-w-sm">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <Input
+              placeholder="Buscar por nome ou email..."
+              className="pl-9"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+            />
+          </div>
+
+          <div className="flex flex-wrap items-center gap-2">
+            <Filter className="h-4 w-4 text-muted-foreground" />
+
+            <Select value={filterSystem} onValueChange={setFilterSystem}>
+              <SelectTrigger className="h-8 w-[160px] text-xs">
+                <SelectValue placeholder="Plataforma" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">Todas plataformas</SelectItem>
+                {systems.map((sys) => (
+                  <SelectItem key={sys.id} value={sys.id}>
+                    {sys.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+
+            <Select value={filterRegional} onValueChange={(val) => {
+              setFilterRegional(val);
+              setFilterBranch("all");
+            }}>
+              <SelectTrigger className="h-8 w-[150px] text-xs">
+                <SelectValue placeholder="Regional" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">Todas regionais</SelectItem>
+                {mockRegionals.map((r) => (
+                  <SelectItem key={r.id} value={r.id}>
+                    {r.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+
+            <Select value={filterBranch} onValueChange={setFilterBranch}>
+              <SelectTrigger className="h-8 w-[170px] text-xs">
+                <SelectValue placeholder="Filial" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">Todas filiais</SelectItem>
+                {availableBranches.map((b) => (
+                  <SelectItem key={b.id} value={b.id}>
+                    {b.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+
+            <Select value={filterStatus} onValueChange={setFilterStatus}>
+              <SelectTrigger className="h-8 w-[120px] text-xs">
+                <SelectValue placeholder="Status" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">Todos</SelectItem>
+                <SelectItem value="active">Ativo</SelectItem>
+                <SelectItem value="inactive">Inativo</SelectItem>
+              </SelectContent>
+            </Select>
+
+            {hasActiveFilters && (
+              <Button
+                variant="ghost"
+                size="sm"
+                className="h-8 text-xs text-muted-foreground"
+                onClick={clearFilters}
+              >
+                Limpar filtros
+              </Button>
+            )}
+          </div>
         </div>
 
         <div className="rounded-lg border bg-card">
@@ -277,6 +443,16 @@ export default function UsersPage() {
                               <Settings2 className="h-4 w-4" />
                               Gerenciar Acessos
                             </DropdownMenuItem>
+                            <DropdownMenuItem
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setToggleTarget(user);
+                              }}
+                              className="gap-2"
+                            >
+                              <Power className="h-4 w-4" />
+                              {user.status === "active" ? "Desativar" : "Ativar"} Usuário
+                            </DropdownMenuItem>
                           </DropdownMenuContent>
                         </DropdownMenu>
                       </TableCell>
@@ -315,6 +491,35 @@ export default function UsersPage() {
           </Table>
         </div>
       </motion.div>
+
+      {/* Confirmation modal */}
+      <AlertDialog
+        open={!!toggleTarget}
+        onOpenChange={(open) => !open && setToggleTarget(null)}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>
+              {toggleTarget?.status === "active"
+                ? "Desativar usuário"
+                : "Ativar usuário"}
+            </AlertDialogTitle>
+            <AlertDialogDescription>
+              Tem certeza que deseja{" "}
+              {toggleTarget?.status === "active" ? "desativar" : "ativar"}{" "}
+              <strong>{toggleTarget?.name}</strong>? {toggleTarget?.status === "active"
+                ? "O usuário perderá o acesso a todos os sistemas."
+                : "O usuário voltará a ter acesso aos sistemas configurados."}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancelar</AlertDialogCancel>
+            <AlertDialogAction onClick={confirmToggleStatus}>
+              {toggleTarget?.status === "active" ? "Desativar" : "Ativar"}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }
