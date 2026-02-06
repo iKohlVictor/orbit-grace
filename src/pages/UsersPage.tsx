@@ -1,9 +1,15 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { motion } from "framer-motion";
-import { Search, Plus, MoreHorizontal, Settings2 } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Search, Plus, MoreHorizontal, Settings2, ChevronDown, ChevronRight, Building2, MapPin } from "lucide-react";
 import { systems } from "@/data/systems";
-import { mockUsers, type MockUser } from "@/data/mock-users";
+import {
+  mockUsers,
+  mockBranches,
+  mockRegionals,
+  getRoleLabel,
+  type MockUser,
+} from "@/data/mock-users";
 import { UserRoleBadge } from "@/components/UserRoleBadge";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -24,16 +30,111 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
+function UserExpandedRow({ user }: { user: MockUser }) {
+  const activeAccesses = user.accesses.filter((a) => a.role);
+
+  if (activeAccesses.length === 0) {
+    return (
+      <div className="px-4 py-3 text-sm text-muted-foreground">
+        Este usuário não possui acesso a nenhum sistema.
+      </div>
+    );
+  }
+
+  return (
+    <div className="px-4 py-3 grid grid-cols-1 md:grid-cols-2 gap-3">
+      {activeAccesses.map((access) => {
+        const sys = systems.find((s) => s.id === access.systemId);
+        if (!sys) return null;
+
+        const branchesByRegional = mockRegionals
+          .map((regional) => {
+            const branches = mockBranches
+              .filter(
+                (b) =>
+                  b.regionalId === regional.id &&
+                  access.branches.includes(b.id)
+              );
+            return { regional, branches };
+          })
+          .filter((g) => g.branches.length > 0);
+
+        return (
+          <div
+            key={access.systemId}
+            className="rounded-md border overflow-hidden"
+          >
+            <div
+              className="flex items-center gap-2 px-3 py-2 border-b"
+              style={{
+                backgroundColor: `hsl(var(${sys.colorVar}) / 0.06)`,
+              }}
+            >
+              <sys.icon
+                className="h-3.5 w-3.5 shrink-0"
+                style={{ color: `hsl(var(${sys.colorVar}))` }}
+              />
+              <span className="text-sm font-medium">{sys.name}</span>
+              <UserRoleBadge
+                role={access.role}
+                systemId={sys.id}
+                className="ml-auto"
+              />
+            </div>
+            <div className="px-3 py-2 space-y-1.5">
+              {branchesByRegional.length === 0 ? (
+                <p className="text-xs text-muted-foreground">
+                  Nenhuma filial selecionada
+                </p>
+              ) : (
+                branchesByRegional.map(({ regional, branches }) => (
+                  <div key={regional.id}>
+                    <div className="flex items-center gap-1.5 mb-0.5">
+                      <MapPin className="h-3 w-3 text-muted-foreground" />
+                      <span className="text-xs font-medium text-muted-foreground">
+                        {regional.name}
+                      </span>
+                    </div>
+                    <div className="flex flex-wrap gap-1 ml-4">
+                      {branches.map((b) => (
+                        <Badge
+                          key={b.id}
+                          variant="secondary"
+                          className="text-[10px] font-normal"
+                        >
+                          {b.name}
+                        </Badge>
+                      ))}
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
 export default function UsersPage() {
   const navigate = useNavigate();
   const [users] = useState<MockUser[]>(mockUsers);
   const [search, setSearch] = useState("");
+  const [expandedUser, setExpandedUser] = useState<string | null>(null);
 
   const filtered = users.filter(
     (u) =>
       u.name.toLowerCase().includes(search.toLowerCase()) ||
       u.email.toLowerCase().includes(search.toLowerCase())
   );
+
+  const toggleExpand = (userId: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    setExpandedUser((prev) => (prev === userId ? null : userId));
+  };
+
+  const totalCols = 3 + systems.length + 1;
 
   return (
     <div className="p-4 md:p-8 lg:p-10 w-full">
@@ -73,6 +174,7 @@ export default function UsersPage() {
           <Table>
             <TableHeader>
               <TableRow>
+                <TableHead className="w-[40px]" />
                 <TableHead className="w-[220px]">Usuário</TableHead>
                 <TableHead className="w-[80px]">Status</TableHead>
                 {systems.map((sys) => (
@@ -96,79 +198,113 @@ export default function UsersPage() {
                   .map((n) => n[0])
                   .join("")
                   .slice(0, 2);
+                const isExpanded = expandedUser === user.id;
 
                 return (
-                  <TableRow
-                    key={user.id}
-                    className="cursor-pointer"
-                    onClick={() => navigate(`/usuarios/${user.id}`)}
-                  >
-                    <TableCell>
-                      <div className="flex items-center gap-2.5">
-                        <Avatar className="h-8 w-8">
-                          <AvatarFallback className="bg-primary/10 text-primary text-xs font-semibold">
-                            {initials}
-                          </AvatarFallback>
-                        </Avatar>
-                        <div className="min-w-0">
-                          <p className="text-sm font-medium truncate">{user.name}</p>
-                          <p className="text-xs text-muted-foreground truncate">
-                            {user.email}
-                          </p>
+                  <>
+                    <TableRow
+                      key={user.id}
+                      className="cursor-pointer"
+                      onClick={() => navigate(`/usuarios/${user.id}`)}
+                    >
+                      <TableCell className="px-2">
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-7 w-7"
+                          onClick={(e) => toggleExpand(user.id, e)}
+                        >
+                          {isExpanded ? (
+                            <ChevronDown className="h-4 w-4 text-muted-foreground" />
+                          ) : (
+                            <ChevronRight className="h-4 w-4 text-muted-foreground" />
+                          )}
+                        </Button>
+                      </TableCell>
+                      <TableCell>
+                        <div className="flex items-center gap-2.5">
+                          <Avatar className="h-8 w-8">
+                            <AvatarFallback className="bg-primary/10 text-primary text-xs font-semibold">
+                              {initials}
+                            </AvatarFallback>
+                          </Avatar>
+                          <div className="min-w-0">
+                            <p className="text-sm font-medium truncate">{user.name}</p>
+                            <p className="text-xs text-muted-foreground truncate">
+                              {user.email}
+                            </p>
+                          </div>
                         </div>
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      <Badge
-                        variant={user.status === "active" ? "default" : "secondary"}
-                        className="text-[10px]"
-                      >
-                        {user.status === "active" ? "Ativo" : "Inativo"}
-                      </Badge>
-                    </TableCell>
-                    {systems.map((sys) => {
-                      const access = user.accesses.find(
-                        (a) => a.systemId === sys.id
-                      );
-                      return (
-                        <TableCell key={sys.id} className="text-center">
-                          <UserRoleBadge role={access?.role ?? null} />
-                        </TableCell>
-                      );
-                    })}
-                    <TableCell>
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            className="h-8 w-8"
-                            onClick={(e) => e.stopPropagation()}
-                          >
-                            <MoreHorizontal className="h-4 w-4" />
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                          <DropdownMenuItem
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              navigate(`/usuarios/${user.id}`);
-                            }}
-                            className="gap-2"
-                          >
-                            <Settings2 className="h-4 w-4" />
-                            Gerenciar Acessos
-                          </DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
-                    </TableCell>
-                  </TableRow>
+                      </TableCell>
+                      <TableCell>
+                        <Badge
+                          variant={user.status === "active" ? "default" : "secondary"}
+                          className="text-[10px]"
+                        >
+                          {user.status === "active" ? "Ativo" : "Inativo"}
+                        </Badge>
+                      </TableCell>
+                      {systems.map((sys) => {
+                        const access = user.accesses.find(
+                          (a) => a.systemId === sys.id
+                        );
+                        return (
+                          <TableCell key={sys.id} className="text-center">
+                            <UserRoleBadge role={access?.role ?? null} systemId={sys.id} />
+                          </TableCell>
+                        );
+                      })}
+                      <TableCell>
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              className="h-8 w-8"
+                              onClick={(e) => e.stopPropagation()}
+                            >
+                              <MoreHorizontal className="h-4 w-4" />
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end">
+                            <DropdownMenuItem
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                navigate(`/usuarios/${user.id}`);
+                              }}
+                              className="gap-2"
+                            >
+                              <Settings2 className="h-4 w-4" />
+                              Gerenciar Acessos
+                            </DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      </TableCell>
+                    </TableRow>
+                    <AnimatePresence>
+                      {isExpanded && (
+                        <TableRow key={`${user.id}-detail`}>
+                          <TableCell colSpan={totalCols} className="p-0 border-b">
+                            <motion.div
+                              initial={{ height: 0, opacity: 0 }}
+                              animate={{ height: "auto", opacity: 1 }}
+                              exit={{ height: 0, opacity: 0 }}
+                              transition={{ duration: 0.2 }}
+                              className="overflow-hidden bg-muted/20"
+                            >
+                              <UserExpandedRow user={user} />
+                            </motion.div>
+                          </TableCell>
+                        </TableRow>
+                      )}
+                    </AnimatePresence>
+                  </>
                 );
               })}
               {filtered.length === 0 && (
                 <TableRow>
                   <TableCell
-                    colSpan={3 + systems.length}
+                    colSpan={totalCols}
                     className="text-center py-10 text-muted-foreground"
                   >
                     Nenhum usuário encontrado.
