@@ -365,7 +365,7 @@ export default function UsersPage() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {filtered.map((user) => {
+                {paginated.map((user) => {
                   const initials = user.name
                     .split(" ")
                     .map((n) => n[0])
