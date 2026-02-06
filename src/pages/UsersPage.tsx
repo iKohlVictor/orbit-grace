@@ -184,6 +184,16 @@ export default function UsersPage() {
     return matchesSearch && matchesStatus && matchesSystem && matchesRegional && matchesBranch;
   });
 
+  // Pagination
+  const PAGE_SIZE = 10;
+  const [currentPage, setCurrentPage] = useState(1);
+  const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
+  const safePage = Math.min(currentPage, totalPages);
+  const paginated = filtered.slice((safePage - 1) * PAGE_SIZE, safePage * PAGE_SIZE);
+
+  // Reset page when filters change
+  const resetPage = () => setCurrentPage(1);
+
   const toggleExpand = (userId: string, e: React.MouseEvent) => {
     e.stopPropagation();
     setExpandedUser((prev) => (prev === userId ? null : userId));
@@ -214,6 +224,7 @@ export default function UsersPage() {
     setFilterRegional("");
     setFilterBranch("");
     setFilterStatus("");
+    resetPage();
   };
 
   const totalCols = 3 + systems.length + 1;
