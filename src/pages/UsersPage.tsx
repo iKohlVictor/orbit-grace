@@ -17,11 +17,11 @@ import {
 } from "lucide-react";
 import { systems } from "@/data/systems";
 import {
-  mockUsers,
   mockBranches,
   mockRegionals,
   type MockUser,
 } from "@/data/mock-users";
+import { useUsers } from "@/contexts/UsersContext";
 import { UserRoleBadge } from "@/components/UserRoleBadge";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
