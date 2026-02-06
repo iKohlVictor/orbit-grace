@@ -30,12 +30,30 @@ export const roleColors: Record<string, string> = {
   viewer: "bg-secondary text-secondary-foreground",
 };
 
-export const mockBranches = [
-  { id: "matriz", name: "Matriz - Goiânia" },
-  { id: "rioverde", name: "Rio Verde" },
-  { id: "uberlandia", name: "Uberlândia" },
-  { id: "sinop", name: "Sinop" },
-  { id: "luisEduardo", name: "Luís Eduardo Magalhães" },
+export interface Branch {
+  id: string;
+  name: string;
+  regionalId: string;
+}
+
+export interface Regional {
+  id: string;
+  name: string;
+}
+
+export const mockRegionals: Regional[] = [
+  { id: "centro-oeste", name: "Centro-Oeste" },
+  { id: "sudeste", name: "Sudeste" },
+  { id: "norte", name: "Norte" },
+  { id: "nordeste", name: "Nordeste" },
+];
+
+export const mockBranches: Branch[] = [
+  { id: "matriz", name: "Matriz - Goiânia", regionalId: "centro-oeste" },
+  { id: "rioverde", name: "Rio Verde", regionalId: "centro-oeste" },
+  { id: "uberlandia", name: "Uberlândia", regionalId: "sudeste" },
+  { id: "sinop", name: "Sinop", regionalId: "norte" },
+  { id: "luisEduardo", name: "Luís Eduardo Magalhães", regionalId: "nordeste" },
 ];
 
 export const mockUsers: MockUser[] = [

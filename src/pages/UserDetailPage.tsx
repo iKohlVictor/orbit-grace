@@ -7,6 +7,7 @@ import { maskPhone, maskCpfCnpj } from "@/lib/masks";
 import {
   mockUsers,
   mockBranches,
+  mockRegionals,
   type MockUser,
   type SystemRole,
   type UserAccess,
@@ -277,36 +278,92 @@ export default function UserDetailPage() {
                             </Select>
                           </div>
 
-                          {/* Branches */}
+                          {/* Regionals & Branches */}
                           {hasAccess && (
-                            <div className="space-y-2">
+                            <div className="space-y-3">
                               <Label className="text-xs flex items-center gap-1.5">
                                 <Building2 className="h-3.5 w-3.5" />
-                                Filiais com acesso
+                                Regionais e Filiais com acesso
                               </Label>
-                              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                                {mockBranches.map((branch) => {
-                                  const checked =
-                                    access?.branches.includes(branch.id) ??
-                                    false;
-                                  return (
-                                    <label
-                                      key={branch.id}
-                                      className="flex items-center gap-2.5 rounded-md border px-3 py-2.5 cursor-pointer hover:bg-muted/50 transition-colors"
-                                    >
+                              {mockRegionals.map((regional) => {
+                                const regionalBranches = mockBranches.filter(
+                                  (b) => b.regionalId === regional.id
+                                );
+                                const selectedInRegional = regionalBranches.filter(
+                                  (b) => access?.branches.includes(b.id)
+                                );
+                                const allSelected =
+                                  regionalBranches.length > 0 &&
+                                  selectedInRegional.length === regionalBranches.length;
+                                const someSelected =
+                                  selectedInRegional.length > 0 && !allSelected;
+
+                                const toggleAllRegional = () => {
+                                  const branchIds = regionalBranches.map((b) => b.id);
+                                  setForm((prev) => ({
+                                    ...prev,
+                                    accesses: prev.accesses.map((a) => {
+                                      if (a.systemId !== sys.id) return a;
+                                      if (allSelected) {
+                                        return {
+                                          ...a,
+                                          branches: a.branches.filter(
+                                            (id) => !branchIds.includes(id)
+                                          ),
+                                        };
+                                      }
+                                      return {
+                                        ...a,
+                                        branches: [
+                                          ...new Set([...a.branches, ...branchIds]),
+                                        ],
+                                      };
+                                    }),
+                                  }));
+                                };
+
+                                return (
+                                  <div
+                                    key={regional.id}
+                                    className="rounded-md border overflow-hidden"
+                                  >
+                                    <label className="flex items-center gap-2.5 px-3 py-2.5 bg-muted/30 cursor-pointer hover:bg-muted/50 transition-colors">
                                       <Checkbox
-                                        checked={checked}
-                                        onCheckedChange={() =>
-                                          toggleBranch(sys.id, branch.id)
-                                        }
+                                        checked={allSelected ? true : someSelected ? "indeterminate" : false}
+                                        onCheckedChange={toggleAllRegional}
                                       />
-                                      <span className="text-sm">
-                                        {branch.name}
+                                      <span className="text-sm font-medium">
+                                        {regional.name}
+                                      </span>
+                                      <span className="text-[10px] text-muted-foreground ml-auto">
+                                        {selectedInRegional.length}/{regionalBranches.length}
                                       </span>
                                     </label>
-                                  );
-                                })}
-                              </div>
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-1 p-2">
+                                      {regionalBranches.map((branch) => {
+                                        const checked =
+                                          access?.branches.includes(branch.id) ?? false;
+                                        return (
+                                          <label
+                                            key={branch.id}
+                                            className="flex items-center gap-2.5 rounded px-3 py-2 cursor-pointer hover:bg-muted/40 transition-colors"
+                                          >
+                                            <Checkbox
+                                              checked={checked}
+                                              onCheckedChange={() =>
+                                                toggleBranch(sys.id, branch.id)
+                                              }
+                                            />
+                                            <span className="text-sm">
+                                              {branch.name}
+                                            </span>
+                                          </label>
+                                        );
+                                      })}
+                                    </div>
+                                  </div>
+                                );
+                              })}
                               {access!.branches.length === 0 && (
                                 <p className="text-xs text-muted-foreground">
                                   Selecione ao menos uma filial.
