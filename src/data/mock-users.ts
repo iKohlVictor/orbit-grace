@@ -129,7 +129,7 @@ export const mockUsers: MockUser[] = [
     lastLogin: "2026-02-04T09:15:00",
     accesses: [
       { systemId: "contratos", role: null, branches: [] },
-      { systemId: "clientes", role: "viewer", branches: ["sinop"] },
+      { systemId: "clientes", role: "especialista", branches: ["sinop"] },
       { systemId: "logistica", role: "admin", branches: ["sinop", "rioverde", "matriz"] },
       { systemId: "barter", role: null, branches: [] },
     ],
