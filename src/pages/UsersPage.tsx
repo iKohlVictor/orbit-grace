@@ -1,10 +1,10 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Search, Settings2, Plus, MoreHorizontal } from "lucide-react";
+import { Search, Plus, MoreHorizontal, Settings2 } from "lucide-react";
 import { systems } from "@/data/systems";
 import { mockUsers, type MockUser } from "@/data/mock-users";
 import { UserRoleBadge } from "@/components/UserRoleBadge";
-import { UserAccessDialog } from "@/components/UserAccessDialog";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
@@ -25,25 +25,15 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 export default function UsersPage() {
-  const [users, setUsers] = useState<MockUser[]>(mockUsers);
+  const navigate = useNavigate();
+  const [users] = useState<MockUser[]>(mockUsers);
   const [search, setSearch] = useState("");
-  const [editingUser, setEditingUser] = useState<MockUser | null>(null);
-  const [dialogOpen, setDialogOpen] = useState(false);
 
   const filtered = users.filter(
     (u) =>
       u.name.toLowerCase().includes(search.toLowerCase()) ||
       u.email.toLowerCase().includes(search.toLowerCase())
   );
-
-  const handleSave = (updated: MockUser) => {
-    setUsers((prev) => prev.map((u) => (u.id === updated.id ? updated : u)));
-  };
-
-  const openEdit = (user: MockUser) => {
-    setEditingUser(user);
-    setDialogOpen(true);
-  };
 
   return (
     <div className="p-6 md:p-10 max-w-6xl mx-auto">
@@ -59,13 +49,16 @@ export default function UsersPage() {
               Gerencie os acessos dos usuários entre os sistemas
             </p>
           </div>
-          <Button className="gap-2 shrink-0" size="sm">
+          <Button
+            className="gap-2 shrink-0"
+            size="sm"
+            onClick={() => navigate("/usuarios/novo")}
+          >
             <Plus className="h-4 w-4" />
             Novo Usuário
           </Button>
         </div>
 
-        {/* Search */}
         <div className="relative max-w-sm mb-6">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input
@@ -76,7 +69,6 @@ export default function UsersPage() {
           />
         </div>
 
-        {/* Table */}
         <div className="rounded-lg border bg-card">
           <Table>
             <TableHeader>
@@ -106,7 +98,11 @@ export default function UsersPage() {
                   .slice(0, 2);
 
                 return (
-                  <TableRow key={user.id}>
+                  <TableRow
+                    key={user.id}
+                    className="cursor-pointer"
+                    onClick={() => navigate(`/usuarios/${user.id}`)}
+                  >
                     <TableCell>
                       <div className="flex items-center gap-2.5">
                         <Avatar className="h-8 w-8">
@@ -143,13 +139,21 @@ export default function UsersPage() {
                     <TableCell>
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
-                          <Button variant="ghost" size="icon" className="h-8 w-8">
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-8 w-8"
+                            onClick={(e) => e.stopPropagation()}
+                          >
                             <MoreHorizontal className="h-4 w-4" />
                           </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
                           <DropdownMenuItem
-                            onClick={() => openEdit(user)}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              navigate(`/usuarios/${user.id}`);
+                            }}
                             className="gap-2"
                           >
                             <Settings2 className="h-4 w-4" />
@@ -175,13 +179,6 @@ export default function UsersPage() {
           </Table>
         </div>
       </motion.div>
-
-      <UserAccessDialog
-        user={editingUser}
-        open={dialogOpen}
-        onOpenChange={setDialogOpen}
-        onSave={handleSave}
-      />
     </div>
   );
 }
