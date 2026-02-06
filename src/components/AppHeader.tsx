@@ -2,6 +2,7 @@ import { Menu, Search, ChevronDown, Home, Users } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import logo from "@/assets/logo-grao-direto.svg";
 import { systems, type SystemConfig } from "@/data/systems";
+import { useNotifications } from "@/contexts/NotificationsContext";
 import { Button } from "@/components/ui/button";
 import { NotificationBell } from "@/components/NotificationBell";
 import {
@@ -19,6 +20,10 @@ interface AppHeaderProps {
 
 export function AppHeader({ activeSystem, onSelectSystem, onToggleSidebar }: AppHeaderProps) {
   const navigate = useNavigate();
+  const { notifications } = useNotifications();
+
+  const getSystemUnread = (sysId: string) =>
+    notifications.filter((n) => !n.read && n.systemId === sysId).length;
 
   const handleGoHome = () => {
     onSelectSystem(null);
@@ -65,12 +70,20 @@ export function AppHeader({ activeSystem, onSelectSystem, onToggleSidebar }: App
             <Home className="h-4 w-4" />
             Início
           </DropdownMenuItem>
-          {systems.map((sys) => (
-            <DropdownMenuItem key={sys.id} onClick={() => handleSelectSystem(sys)} className="gap-2">
-              <sys.icon className="h-4 w-4" style={{ color: `hsl(var(${sys.colorVar}))` }} />
-              {sys.name}
-            </DropdownMenuItem>
-          ))}
+          {systems.map((sys) => {
+            const count = getSystemUnread(sys.id);
+            return (
+              <DropdownMenuItem key={sys.id} onClick={() => handleSelectSystem(sys)} className="gap-2">
+                <sys.icon className="h-4 w-4" style={{ color: `hsl(var(${sys.colorVar}))` }} />
+                <span className="flex-1">{sys.name}</span>
+                {count > 0 && (
+                  <span className="h-5 min-w-[20px] rounded-full bg-destructive text-destructive-foreground text-[10px] font-bold flex items-center justify-center px-1.5">
+                    {count}
+                  </span>
+                )}
+              </DropdownMenuItem>
+            );
+          })}
         </DropdownMenuContent>
       </DropdownMenu>
 

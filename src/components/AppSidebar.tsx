@@ -1,6 +1,7 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { type SystemConfig } from "@/data/systems";
+import { useNotifications } from "@/contexts/NotificationsContext";
 import { cn } from "@/lib/utils";
 
 interface AppSidebarProps {
@@ -11,6 +12,11 @@ interface AppSidebarProps {
 export function AppSidebar({ system, collapsed }: AppSidebarProps) {
   const location = useLocation();
   const navigate = useNavigate();
+  const { notifications } = useNotifications();
+
+  const systemUnread = system
+    ? notifications.filter((n) => !n.read && n.systemId === system.id).length
+    : 0;
 
   if (!system) return null;
 
@@ -37,6 +43,11 @@ export function AppSidebar({ system, collapsed }: AppSidebarProps) {
             <span className="text-xs font-semibold tracking-wide uppercase text-sidebar-muted truncate">
               {system.shortName}
             </span>
+            {systemUnread > 0 && (
+              <span className="ml-auto h-5 min-w-[20px] rounded-full bg-destructive text-destructive-foreground text-[10px] font-bold flex items-center justify-center px-1.5">
+                {systemUnread}
+              </span>
+            )}
           </div>
         </div>
       )}
