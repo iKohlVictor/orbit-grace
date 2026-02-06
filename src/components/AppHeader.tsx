@@ -2,6 +2,7 @@ import { Menu, Search, ChevronDown, Home, Users } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import logo from "@/assets/logo-grao-direto.svg";
 import { systems, type SystemConfig } from "@/data/systems";
+import { useNotifications } from "@/contexts/NotificationsContext";
 import { Button } from "@/components/ui/button";
 import { NotificationBell } from "@/components/NotificationBell";
 import {
