@@ -95,7 +95,28 @@ export default function UserDetailPage() {
       toast.error("Nome e email são obrigatórios.");
       return;
     }
-    toast.success(isNew ? "Usuário criado com sucesso." : "Usuário atualizado com sucesso.");
+    if (isNew) {
+      addUser({
+        name: form.name,
+        email: form.email,
+        phone: form.phone,
+        document: form.document,
+        status: form.status,
+        lastLogin: form.lastLogin,
+        accesses: form.accesses,
+      });
+      toast.success("Usuário criado com sucesso.");
+    } else {
+      updateUser(userId!, {
+        name: form.name,
+        email: form.email,
+        phone: form.phone,
+        document: form.document,
+        status: form.status,
+        accesses: form.accesses,
+      });
+      toast.success("Usuário atualizado com sucesso.");
+    }
     navigate("/usuarios");
   };
 
