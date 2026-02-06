@@ -114,7 +114,7 @@ export const mockUsers: MockUser[] = [
     status: "active",
     lastLogin: "2026-02-05T14:20:00",
     accesses: [
-      { systemId: "contratos", role: "editor", branches: ["matriz"] },
+      { systemId: "contratos", role: "filial", branches: ["matriz"] },
       { systemId: "clientes", role: "admin", branches: ["matriz", "uberlandia"] },
       { systemId: "logistica", role: null, branches: [] },
       { systemId: "barter", role: null, branches: [] },
