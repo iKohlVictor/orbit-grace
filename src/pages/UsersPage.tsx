@@ -7,10 +7,13 @@ import {
   Plus,
   ChevronDown,
   ChevronRight,
+  ChevronLeft,
   MapPin,
   Power,
   Pencil,
   X,
+  ChevronsLeft,
+  ChevronsRight,
 } from "lucide-react";
 import { systems } from "@/data/systems";
 import {
