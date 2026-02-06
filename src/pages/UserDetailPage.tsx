@@ -99,7 +99,7 @@ export default function UserDetailPage() {
     setExpandedSystem((prev) => (prev === sysId ? null : sysId));
 
   return (
-    <div className="p-6 md:p-10 max-w-3xl mx-auto">
+    <div className="p-4 md:p-8 lg:p-10 w-full">
       <motion.div
         initial={{ opacity: 0, y: -8 }}
         animate={{ opacity: 1, y: 0 }}
