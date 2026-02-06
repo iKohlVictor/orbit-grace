@@ -135,11 +135,12 @@ function UserExpandedRow({ user }: { user: MockUser }) {
 
 export default function UsersPage() {
   const navigate = useNavigate();
+  const { activeSystem } = useOutletContext<{ activeSystem: SystemConfig | null }>();
   const [users, setUsers] = useState<MockUser[]>(mockUsers);
   const [search, setSearch] = useState("");
   const [expandedUser, setExpandedUser] = useState<string | null>(null);
 
-  const [filterSystem, setFilterSystem] = useState("");
+  const [filterSystem, setFilterSystem] = useState(activeSystem?.id ?? "");
   const [filterRegional, setFilterRegional] = useState("");
   const [filterBranch, setFilterBranch] = useState("");
   const [filterStatus, setFilterStatus] = useState("");
