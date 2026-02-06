@@ -1,4 +1,4 @@
-export type SystemRole = "admin" | "editor" | "viewer" | null;
+export type SystemRole = string | null;
 
 export interface UserAccess {
   systemId: string;
@@ -18,17 +18,51 @@ export interface MockUser {
   lastLogin: string;
 }
 
-export const roleLabels: Record<string, string> = {
-  admin: "Administrador",
-  editor: "Editor",
-  viewer: "Visualizador",
+export interface SystemRoleOption {
+  value: string;
+  label: string;
+}
+
+export const systemRoles: Record<string, SystemRoleOption[]> = {
+  contratos: [
+    { value: "filial", label: "Filial" },
+    { value: "gerencia_regional", label: "Gerência Regional" },
+    { value: "gerencia_nacional", label: "Gerência Nacional" },
+    { value: "gerencia_gbs", label: "Gerência GBS" },
+    { value: "admin", label: "Administrador" },
+    { value: "analise_doc", label: "Análise de Documentação" },
+  ],
+  clientes: [
+    { value: "filial", label: "Filial" },
+    { value: "regional", label: "Regional" },
+    { value: "nacional", label: "Nacional" },
+    { value: "especialista", label: "Especialista" },
+    { value: "key_account", label: "KeyAccount" },
+    { value: "admin", label: "Administrador" },
+  ],
+  logistica: [
+    { value: "filial", label: "Filial" },
+    { value: "regional", label: "Regional" },
+    { value: "nacional", label: "Nacional" },
+    { value: "troca_notas", label: "Troca Notas" },
+    { value: "admin", label: "Administrador" },
+    { value: "logistico", label: "Logístico" },
+  ],
+  barter: [
+    { value: "filial", label: "Filial" },
+    { value: "regional", label: "Regional" },
+    { value: "nacional", label: "Nacional" },
+    { value: "mesa", label: "Mesa" },
+    { value: "admin", label: "Administrador" },
+    { value: "especialista", label: "Especialista" },
+  ],
 };
 
-export const roleColors: Record<string, string> = {
-  admin: "bg-destructive/10 text-destructive",
-  editor: "bg-accent/20 text-accent-foreground",
-  viewer: "bg-secondary text-secondary-foreground",
-};
+export function getRoleLabel(systemId: string, role: SystemRole): string {
+  if (!role) return "Sem acesso";
+  const roles = systemRoles[systemId];
+  return roles?.find((r) => r.value === role)?.label ?? role;
+}
 
 export interface Branch {
   id: string;
@@ -68,8 +102,8 @@ export const mockUsers: MockUser[] = [
     accesses: [
       { systemId: "contratos", role: "admin", branches: ["matriz", "rioverde"] },
       { systemId: "clientes", role: "admin", branches: ["matriz"] },
-      { systemId: "logistica", role: "viewer", branches: ["matriz", "sinop"] },
-      { systemId: "barter", role: "editor", branches: ["rioverde"] },
+      { systemId: "logistica", role: "logistico", branches: ["matriz", "sinop"] },
+      { systemId: "barter", role: "mesa", branches: ["rioverde"] },
     ],
   },
   {
@@ -80,7 +114,7 @@ export const mockUsers: MockUser[] = [
     status: "active",
     lastLogin: "2026-02-05T14:20:00",
     accesses: [
-      { systemId: "contratos", role: "editor", branches: ["matriz"] },
+      { systemId: "contratos", role: "filial", branches: ["matriz"] },
       { systemId: "clientes", role: "admin", branches: ["matriz", "uberlandia"] },
       { systemId: "logistica", role: null, branches: [] },
       { systemId: "barter", role: null, branches: [] },
@@ -95,7 +129,7 @@ export const mockUsers: MockUser[] = [
     lastLogin: "2026-02-04T09:15:00",
     accesses: [
       { systemId: "contratos", role: null, branches: [] },
-      { systemId: "clientes", role: "viewer", branches: ["sinop"] },
+      { systemId: "clientes", role: "especialista", branches: ["sinop"] },
       { systemId: "logistica", role: "admin", branches: ["sinop", "rioverde", "matriz"] },
       { systemId: "barter", role: null, branches: [] },
     ],
@@ -109,10 +143,10 @@ export const mockUsers: MockUser[] = [
     status: "inactive",
     lastLogin: "2026-01-20T16:00:00",
     accesses: [
-      { systemId: "contratos", role: "viewer", branches: ["luisEduardo"] },
+      { systemId: "contratos", role: "analise_doc", branches: ["luisEduardo"] },
       { systemId: "clientes", role: null, branches: [] },
       { systemId: "logistica", role: null, branches: [] },
-      { systemId: "barter", role: "viewer", branches: ["luisEduardo"] },
+      { systemId: "barter", role: "filial", branches: ["luisEduardo"] },
     ],
   },
   {
@@ -125,8 +159,8 @@ export const mockUsers: MockUser[] = [
     lastLogin: "2026-02-06T08:45:00",
     accesses: [
       { systemId: "contratos", role: "admin", branches: ["matriz", "rioverde", "uberlandia"] },
-      { systemId: "clientes", role: "editor", branches: ["matriz"] },
-      { systemId: "logistica", role: "editor", branches: ["rioverde", "sinop"] },
+      { systemId: "clientes", role: "key_account", branches: ["matriz"] },
+      { systemId: "logistica", role: "regional", branches: ["rioverde", "sinop"] },
       { systemId: "barter", role: "admin", branches: ["matriz", "luisEduardo"] },
     ],
   },

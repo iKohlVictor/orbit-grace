@@ -8,10 +8,11 @@ import {
   mockUsers,
   mockBranches,
   mockRegionals,
+  systemRoles,
+  getRoleLabel,
   type MockUser,
   type SystemRole,
   type UserAccess,
-  roleLabels,
 } from "@/data/mock-users";
 import { UserRoleBadge } from "@/components/UserRoleBadge";
 import { Input } from "@/components/ui/input";
@@ -219,7 +220,7 @@ export default function UserDetailPage() {
                     <div className="flex-1 min-w-0">
                       <p className="text-sm font-medium">{sys.name}</p>
                       <div className="flex items-center gap-2 mt-0.5">
-                        <UserRoleBadge role={access?.role ?? null} />
+                        <UserRoleBadge role={access?.role ?? null} systemId={sys.id} />
                         {hasAccess && access!.branches.length > 0 && (
                           <span className="text-[10px] text-muted-foreground">
                             · {access!.branches.length} filial(is)
@@ -265,15 +266,11 @@ export default function UserDetailPage() {
                               </SelectTrigger>
                               <SelectContent>
                                 <SelectItem value="none">Sem acesso</SelectItem>
-                                <SelectItem value="admin">
-                                  {roleLabels.admin}
-                                </SelectItem>
-                                <SelectItem value="editor">
-                                  {roleLabels.editor}
-                                </SelectItem>
-                                <SelectItem value="viewer">
-                                  {roleLabels.viewer}
-                                </SelectItem>
+                                {(systemRoles[sys.id] ?? []).map((r) => (
+                                  <SelectItem key={r.value} value={r.value}>
+                                    {r.label}
+                                  </SelectItem>
+                                ))}
                               </SelectContent>
                             </Select>
                           </div>
