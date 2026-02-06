@@ -49,12 +49,13 @@ function emptyUser(): Omit<MockUser, "id"> {
 export default function UserDetailPage() {
   const { userId } = useParams();
   const navigate = useNavigate();
+  const { users, addUser, updateUser } = useUsers();
   const isNew = userId === "novo";
 
   const [form, setForm] = useState<Omit<MockUser, "id"> & { id?: string }>(
     () => {
       if (isNew) return emptyUser();
-      const found = mockUsers.find((u) => u.id === userId);
+      const found = users.find((u) => u.id === userId);
       return found ? { ...found, accesses: found.accesses.map((a) => ({ ...a, branches: [...a.branches] })) } : emptyUser();
     }
   );
