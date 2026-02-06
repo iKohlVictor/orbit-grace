@@ -220,7 +220,7 @@ export default function UserDetailPage() {
                     <div className="flex-1 min-w-0">
                       <p className="text-sm font-medium">{sys.name}</p>
                       <div className="flex items-center gap-2 mt-0.5">
-                        <UserRoleBadge role={access?.role ?? null} />
+                        <UserRoleBadge role={access?.role ?? null} systemId={sys.id} />
                         {hasAccess && access!.branches.length > 0 && (
                           <span className="text-[10px] text-muted-foreground">
                             · {access!.branches.length} filial(is)
