@@ -3,6 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowLeft, Save, ChevronDown, ChevronRight, X, Building2 } from "lucide-react";
 import { systems } from "@/data/systems";
+import { maskPhone, maskCpfCnpj } from "@/lib/masks";
 import {
   mockUsers,
   mockBranches,
@@ -143,7 +144,7 @@ export default function UserDetailPage() {
                 id="phone"
                 placeholder="(00) 00000-0000"
                 value={form.phone}
-                onChange={(e) => updateField("phone", e.target.value)}
+                onChange={(e) => updateField("phone", maskPhone(e.target.value))}
               />
             </div>
             <div className="space-y-1.5">
@@ -162,7 +163,7 @@ export default function UserDetailPage() {
                 id="document"
                 placeholder="CPF ou CNPJ"
                 value={form.document ?? ""}
-                onChange={(e) => updateField("document", e.target.value)}
+                onChange={(e) => updateField("document", maskCpfCnpj(e.target.value))}
               />
             </div>
           </div>
