@@ -185,11 +185,12 @@ export default function UsersPage() {
   });
 
   // Pagination
-  const PAGE_SIZE = 10;
+  const PAGE_SIZE_OPTIONS = [10, 20, 50, 100];
+  const [pageSize, setPageSize] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
-  const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
+  const totalPages = Math.max(1, Math.ceil(filtered.length / pageSize));
   const safePage = Math.min(currentPage, totalPages);
-  const paginated = filtered.slice((safePage - 1) * PAGE_SIZE, safePage * PAGE_SIZE);
+  const paginated = filtered.slice((safePage - 1) * pageSize, safePage * pageSize);
 
   // Reset page when filters change
   const resetPage = () => setCurrentPage(1);
@@ -493,9 +494,24 @@ export default function UsersPage() {
           {/* Pagination */}
           {filtered.length > 0 && (
             <div className="flex items-center justify-between mt-4 text-sm text-muted-foreground">
-              <span>
-                {(safePage - 1) * PAGE_SIZE + 1}–{Math.min(safePage * PAGE_SIZE, filtered.length)} de {filtered.length} usuários
-              </span>
+              <div className="flex items-center gap-2">
+                <span>Exibindo</span>
+                <div className="relative">
+                  <select
+                    value={pageSize}
+                    onChange={(e) => { setPageSize(Number(e.target.value)); setCurrentPage(1); }}
+                    className="h-8 rounded-md border border-input bg-background px-2 pr-7 text-sm appearance-none cursor-pointer"
+                  >
+                    {PAGE_SIZE_OPTIONS.map((opt) => (
+                      <option key={opt} value={opt}>{opt}</option>
+                    ))}
+                  </select>
+                  <ChevronDown className="absolute right-1.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 pointer-events-none" />
+                </div>
+                <span>
+                  — {(safePage - 1) * pageSize + 1}–{Math.min(safePage * pageSize, filtered.length)} de {filtered.length}
+                </span>
+              </div>
               <div className="flex items-center gap-1">
                 <Button
                   variant="outline"
