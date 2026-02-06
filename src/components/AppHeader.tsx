@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import logo from "@/assets/logo-grao-direto.svg";
 import { systems, type SystemConfig } from "@/data/systems";
 import { Button } from "@/components/ui/button";
+import { NotificationBell } from "@/components/NotificationBell";
 import {
   DropdownMenu,
   DropdownMenuContent,
