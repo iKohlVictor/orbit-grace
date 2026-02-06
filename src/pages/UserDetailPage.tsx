@@ -1,11 +1,10 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowLeft, Save, ChevronDown, ChevronRight, X, Building2 } from "lucide-react";
 import { systems } from "@/data/systems";
 import { maskPhone, maskCpfCnpj } from "@/lib/masks";
 import {
-  mockUsers,
   mockBranches,
   mockRegionals,
   systemRoles,
@@ -14,6 +13,7 @@ import {
   type SystemRole,
   type UserAccess,
 } from "@/data/mock-users";
+import { useUsers } from "@/contexts/UsersContext";
 import { UserRoleBadge } from "@/components/UserRoleBadge";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -49,12 +49,13 @@ function emptyUser(): Omit<MockUser, "id"> {
 export default function UserDetailPage() {
   const { userId } = useParams();
   const navigate = useNavigate();
+  const { users, addUser, updateUser } = useUsers();
   const isNew = userId === "novo";
 
   const [form, setForm] = useState<Omit<MockUser, "id"> & { id?: string }>(
     () => {
       if (isNew) return emptyUser();
-      const found = mockUsers.find((u) => u.id === userId);
+      const found = users.find((u) => u.id === userId);
       return found ? { ...found, accesses: found.accesses.map((a) => ({ ...a, branches: [...a.branches] })) } : emptyUser();
     }
   );
@@ -94,7 +95,28 @@ export default function UserDetailPage() {
       toast.error("Nome e email são obrigatórios.");
       return;
     }
-    toast.success(isNew ? "Usuário criado com sucesso." : "Usuário atualizado com sucesso.");
+    if (isNew) {
+      addUser({
+        name: form.name,
+        email: form.email,
+        phone: form.phone,
+        document: form.document,
+        status: form.status,
+        lastLogin: form.lastLogin,
+        accesses: form.accesses,
+      });
+      toast.success("Usuário criado com sucesso.");
+    } else {
+      updateUser(userId!, {
+        name: form.name,
+        email: form.email,
+        phone: form.phone,
+        document: form.document,
+        status: form.status,
+        accesses: form.accesses,
+      });
+      toast.success("Usuário atualizado com sucesso.");
+    }
     navigate("/usuarios");
   };
 

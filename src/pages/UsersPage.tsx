@@ -17,11 +17,11 @@ import {
 } from "lucide-react";
 import { systems } from "@/data/systems";
 import {
-  mockUsers,
   mockBranches,
   mockRegionals,
   type MockUser,
 } from "@/data/mock-users";
+import { useUsers } from "@/contexts/UsersContext";
 import { UserRoleBadge } from "@/components/UserRoleBadge";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -139,7 +139,7 @@ function UserExpandedRow({ user }: { user: MockUser }) {
 export default function UsersPage() {
   const navigate = useNavigate();
   const { activeSystem } = useOutletContext<{ activeSystem: SystemConfig | null }>();
-  const [users, setUsers] = useState<MockUser[]>(mockUsers);
+  const { users, updateUser } = useUsers();
   const [search, setSearch] = useState("");
   const [expandedUser, setExpandedUser] = useState<string | null>(null);
 
@@ -202,13 +202,8 @@ export default function UsersPage() {
 
   const confirmToggleStatus = () => {
     if (!toggleTarget) return;
-    setUsers((prev) =>
-      prev.map((u) =>
-        u.id === toggleTarget.id
-          ? { ...u, status: u.status === "active" ? "inactive" : "active" }
-          : u
-      )
-    );
+    const newStatus = toggleTarget.status === "active" ? "inactive" : "active";
+    updateUser(toggleTarget.id, { status: newStatus });
     toast.success(
       toggleTarget.status === "active"
         ? `${toggleTarget.name} foi desativado.`
