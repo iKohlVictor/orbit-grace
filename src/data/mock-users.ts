@@ -159,8 +159,8 @@ export const mockUsers: MockUser[] = [
     lastLogin: "2026-02-06T08:45:00",
     accesses: [
       { systemId: "contratos", role: "admin", branches: ["matriz", "rioverde", "uberlandia"] },
-      { systemId: "clientes", role: "editor", branches: ["matriz"] },
-      { systemId: "logistica", role: "editor", branches: ["rioverde", "sinop"] },
+      { systemId: "clientes", role: "key_account", branches: ["matriz"] },
+      { systemId: "logistica", role: "regional", branches: ["rioverde", "sinop"] },
       { systemId: "barter", role: "admin", branches: ["matriz", "luisEduardo"] },
     ],
   },
