@@ -20,6 +20,10 @@ interface AppHeaderProps {
 
 export function AppHeader({ activeSystem, onSelectSystem, onToggleSidebar }: AppHeaderProps) {
   const navigate = useNavigate();
+  const { notifications } = useNotifications();
+
+  const getSystemUnread = (sysId: string) =>
+    notifications.filter((n) => !n.read && n.systemId === sysId).length;
 
   const handleGoHome = () => {
     onSelectSystem(null);
