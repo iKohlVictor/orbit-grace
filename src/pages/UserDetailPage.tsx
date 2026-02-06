@@ -7,6 +7,7 @@ import { maskPhone, maskCpfCnpj } from "@/lib/masks";
 import {
   mockUsers,
   mockBranches,
+  mockRegionals,
   type MockUser,
   type SystemRole,
   type UserAccess,
