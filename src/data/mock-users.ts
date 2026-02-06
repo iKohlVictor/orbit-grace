@@ -143,10 +143,10 @@ export const mockUsers: MockUser[] = [
     status: "inactive",
     lastLogin: "2026-01-20T16:00:00",
     accesses: [
-      { systemId: "contratos", role: "viewer", branches: ["luisEduardo"] },
+      { systemId: "contratos", role: "analise_doc", branches: ["luisEduardo"] },
       { systemId: "clientes", role: null, branches: [] },
       { systemId: "logistica", role: null, branches: [] },
-      { systemId: "barter", role: "viewer", branches: ["luisEduardo"] },
+      { systemId: "barter", role: "filial", branches: ["luisEduardo"] },
     ],
   },
   {
