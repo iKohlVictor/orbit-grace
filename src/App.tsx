@@ -19,22 +19,25 @@ const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
       <UsersProvider>
-        <Toaster />
-        <Sonner />
-        <BrowserRouter>
-          <Routes>
-            <Route element={<AppShell />}>
-              <Route path="/" element={<Index />} />
-              <Route path="/contratos/*" element={<SystemPage />} />
-              <Route path="/clientes/*" element={<SystemPage />} />
-              <Route path="/logistica/*" element={<SystemPage />} />
-              <Route path="/barter/*" element={<SystemPage />} />
-              <Route path="/usuarios" element={<UsersPage />} />
-              <Route path="/usuarios/:userId" element={<UserDetailPage />} />
-            </Route>
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </BrowserRouter>
+        <NotificationsProvider>
+          <Toaster />
+          <Sonner />
+          <BrowserRouter>
+            <Routes>
+              <Route element={<AppShell />}>
+                <Route path="/" element={<Index />} />
+                <Route path="/contratos/*" element={<SystemPage />} />
+                <Route path="/clientes/*" element={<SystemPage />} />
+                <Route path="/logistica/*" element={<SystemPage />} />
+                <Route path="/barter/*" element={<SystemPage />} />
+                <Route path="/usuarios" element={<UsersPage />} />
+                <Route path="/usuarios/:userId" element={<UserDetailPage />} />
+                <Route path="/notificacoes" element={<NotificationsPage />} />
+              </Route>
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </BrowserRouter>
+        </NotificationsProvider>
       </UsersProvider>
     </TooltipProvider>
   </QueryClientProvider>
