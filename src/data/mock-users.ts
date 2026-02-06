@@ -1,4 +1,4 @@
-export type SystemRole = "admin" | "editor" | "viewer" | null;
+export type SystemRole = string | null;
 
 export interface UserAccess {
   systemId: string;
@@ -18,17 +18,51 @@ export interface MockUser {
   lastLogin: string;
 }
 
-export const roleLabels: Record<string, string> = {
-  admin: "Administrador",
-  editor: "Editor",
-  viewer: "Visualizador",
+export interface SystemRoleOption {
+  value: string;
+  label: string;
+}
+
+export const systemRoles: Record<string, SystemRoleOption[]> = {
+  contratos: [
+    { value: "filial", label: "Filial" },
+    { value: "gerencia_regional", label: "Gerência Regional" },
+    { value: "gerencia_nacional", label: "Gerência Nacional" },
+    { value: "gerencia_gbs", label: "Gerência GBS" },
+    { value: "admin", label: "Administrador" },
+    { value: "analise_doc", label: "Análise de Documentação" },
+  ],
+  clientes: [
+    { value: "filial", label: "Filial" },
+    { value: "regional", label: "Regional" },
+    { value: "nacional", label: "Nacional" },
+    { value: "especialista", label: "Especialista" },
+    { value: "key_account", label: "KeyAccount" },
+    { value: "admin", label: "Administrador" },
+  ],
+  logistica: [
+    { value: "filial", label: "Filial" },
+    { value: "regional", label: "Regional" },
+    { value: "nacional", label: "Nacional" },
+    { value: "troca_notas", label: "Troca Notas" },
+    { value: "admin", label: "Administrador" },
+    { value: "logistico", label: "Logístico" },
+  ],
+  barter: [
+    { value: "filial", label: "Filial" },
+    { value: "regional", label: "Regional" },
+    { value: "nacional", label: "Nacional" },
+    { value: "mesa", label: "Mesa" },
+    { value: "admin", label: "Administrador" },
+    { value: "especialista", label: "Especialista" },
+  ],
 };
 
-export const roleColors: Record<string, string> = {
-  admin: "bg-destructive/10 text-destructive",
-  editor: "bg-accent/20 text-accent-foreground",
-  viewer: "bg-secondary text-secondary-foreground",
-};
+export function getRoleLabel(systemId: string, role: SystemRole): string {
+  if (!role) return "Sem acesso";
+  const roles = systemRoles[systemId];
+  return roles?.find((r) => r.value === role)?.label ?? role;
+}
 
 export interface Branch {
   id: string;
