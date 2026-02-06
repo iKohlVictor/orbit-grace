@@ -163,7 +163,7 @@ export default function UserDetailPage() {
                 id="document"
                 placeholder="CPF ou CNPJ"
                 value={form.document ?? ""}
-                onChange={(e) => updateField("document", e.target.value)}
+                onChange={(e) => updateField("document", maskCpfCnpj(e.target.value))}
               />
             </div>
           </div>
