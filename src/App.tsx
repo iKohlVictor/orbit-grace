@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AppShell } from "./components/AppShell";
 import Index from "./pages/Index";
 import SystemPage from "./pages/SystemPage";
+import UsersPage from "./pages/UsersPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -23,6 +24,7 @@ const App = () => (
             <Route path="/clientes/*" element={<SystemPage />} />
             <Route path="/logistica/*" element={<SystemPage />} />
             <Route path="/barter/*" element={<SystemPage />} />
+            <Route path="/usuarios" element={<UsersPage />} />
           </Route>
           <Route path="*" element={<NotFound />} />
         </Routes>

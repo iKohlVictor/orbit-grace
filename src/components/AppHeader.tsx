@@ -1,4 +1,4 @@
-import { Menu, Bell, Search, ChevronDown, Home } from "lucide-react";
+import { Menu, Bell, Search, ChevronDown, Home, Users } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import logo from "@/assets/logo-grao-direto.svg";
 import { systems, type SystemConfig } from "@/data/systems";
@@ -77,6 +77,9 @@ export function AppHeader({ activeSystem, onSelectSystem, onToggleSidebar }: App
 
       <Button variant="ghost" size="icon" className="hidden sm:flex">
         <Search className="h-4.5 w-4.5" />
+      </Button>
+      <Button variant="ghost" size="icon" onClick={() => navigate("/usuarios")} title="Usuários">
+        <Users className="h-4.5 w-4.5" />
       </Button>
       <Button variant="ghost" size="icon">
         <Bell className="h-4.5 w-4.5" />
