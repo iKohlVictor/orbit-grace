@@ -202,13 +202,8 @@ export default function UsersPage() {
 
   const confirmToggleStatus = () => {
     if (!toggleTarget) return;
-    setUsers((prev) =>
-      prev.map((u) =>
-        u.id === toggleTarget.id
-          ? { ...u, status: u.status === "active" ? "inactive" : "active" }
-          : u
-      )
-    );
+    const newStatus = toggleTarget.status === "active" ? "inactive" : "active";
+    updateUser(toggleTarget.id, { status: newStatus });
     toast.success(
       toggleTarget.status === "active"
         ? `${toggleTarget.name} foi desativado.`
