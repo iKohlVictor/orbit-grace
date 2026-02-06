@@ -7,10 +7,13 @@ import {
   Plus,
   ChevronDown,
   ChevronRight,
+  ChevronLeft,
   MapPin,
   Power,
   Pencil,
   X,
+  ChevronsLeft,
+  ChevronsRight,
 } from "lucide-react";
 import { systems } from "@/data/systems";
 import {
@@ -181,6 +184,16 @@ export default function UsersPage() {
     return matchesSearch && matchesStatus && matchesSystem && matchesRegional && matchesBranch;
   });
 
+  // Pagination
+  const PAGE_SIZE = 10;
+  const [currentPage, setCurrentPage] = useState(1);
+  const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
+  const safePage = Math.min(currentPage, totalPages);
+  const paginated = filtered.slice((safePage - 1) * PAGE_SIZE, safePage * PAGE_SIZE);
+
+  // Reset page when filters change
+  const resetPage = () => setCurrentPage(1);
+
   const toggleExpand = (userId: string, e: React.MouseEvent) => {
     e.stopPropagation();
     setExpandedUser((prev) => (prev === userId ? null : userId));
@@ -211,6 +224,7 @@ export default function UsersPage() {
     setFilterRegional("");
     setFilterBranch("");
     setFilterStatus("");
+    resetPage();
   };
 
   const totalCols = 3 + systems.length + 1;
@@ -248,14 +262,14 @@ export default function UsersPage() {
                 placeholder="Buscar por nome ou email..."
                 className="pl-9"
                 value={search}
-                onChange={(e) => setSearch(e.target.value)}
+                onChange={(e) => { setSearch(e.target.value); resetPage(); }}
               />
             </div>
 
             <div className="relative min-w-[160px]">
               <select
                 value={filterSystem}
-                onChange={(e) => setFilterSystem(e.target.value)}
+                onChange={(e) => { setFilterSystem(e.target.value); resetPage(); }}
                 className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 appearance-none cursor-pointer"
               >
                 <option value="">Plataforma</option>
@@ -274,6 +288,7 @@ export default function UsersPage() {
                 onChange={(e) => {
                   setFilterRegional(e.target.value);
                   setFilterBranch("");
+                  resetPage();
                 }}
                 className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 appearance-none cursor-pointer"
               >
@@ -290,7 +305,7 @@ export default function UsersPage() {
             <div className="relative min-w-[160px]">
               <select
                 value={filterBranch}
-                onChange={(e) => setFilterBranch(e.target.value)}
+                onChange={(e) => { setFilterBranch(e.target.value); resetPage(); }}
                 className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 appearance-none cursor-pointer"
               >
                 <option value="">Filial</option>
@@ -306,7 +321,7 @@ export default function UsersPage() {
             <div className="relative min-w-[120px]">
               <select
                 value={filterStatus}
-                onChange={(e) => setFilterStatus(e.target.value)}
+                onChange={(e) => { setFilterStatus(e.target.value); resetPage(); }}
                 className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 appearance-none cursor-pointer"
               >
                 <option value="">Status</option>
@@ -350,7 +365,7 @@ export default function UsersPage() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {filtered.map((user) => {
+                {paginated.map((user) => {
                   const initials = user.name
                     .split(" ")
                     .map((n) => n[0])
@@ -474,6 +489,56 @@ export default function UsersPage() {
               </TableBody>
             </Table>
           </div>
+
+          {/* Pagination */}
+          {filtered.length > 0 && (
+            <div className="flex items-center justify-between mt-4 text-sm text-muted-foreground">
+              <span>
+                {(safePage - 1) * PAGE_SIZE + 1}–{Math.min(safePage * PAGE_SIZE, filtered.length)} de {filtered.length} usuários
+              </span>
+              <div className="flex items-center gap-1">
+                <Button
+                  variant="outline"
+                  size="icon"
+                  className="h-8 w-8"
+                  disabled={safePage <= 1}
+                  onClick={() => setCurrentPage(1)}
+                >
+                  <ChevronsLeft className="h-4 w-4" />
+                </Button>
+                <Button
+                  variant="outline"
+                  size="icon"
+                  className="h-8 w-8"
+                  disabled={safePage <= 1}
+                  onClick={() => setCurrentPage((p) => p - 1)}
+                >
+                  <ChevronLeft className="h-4 w-4" />
+                </Button>
+                <span className="px-3 font-medium text-foreground">
+                  {safePage} / {totalPages}
+                </span>
+                <Button
+                  variant="outline"
+                  size="icon"
+                  className="h-8 w-8"
+                  disabled={safePage >= totalPages}
+                  onClick={() => setCurrentPage((p) => p + 1)}
+                >
+                  <ChevronRight className="h-4 w-4" />
+                </Button>
+                <Button
+                  variant="outline"
+                  size="icon"
+                  className="h-8 w-8"
+                  disabled={safePage >= totalPages}
+                  onClick={() => setCurrentPage(totalPages)}
+                >
+                  <ChevronsRight className="h-4 w-4" />
+                </Button>
+              </div>
+            </div>
+          )}
         </motion.div>
 
         <AlertDialog
