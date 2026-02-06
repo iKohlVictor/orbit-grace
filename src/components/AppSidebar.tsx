@@ -1,6 +1,7 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { type SystemConfig } from "@/data/systems";
+import { useNotifications } from "@/contexts/NotificationsContext";
 import { cn } from "@/lib/utils";
 
 interface AppSidebarProps {
