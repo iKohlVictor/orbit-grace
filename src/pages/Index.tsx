@@ -18,7 +18,7 @@ const Index = () => {
   };
 
   return (
-    <div className="p-6 md:p-10 max-w-5xl mx-auto">
+    <div className="p-4 md:p-8 lg:p-10 w-full">
       <motion.div
         initial={{ opacity: 0, y: -8 }}
         animate={{ opacity: 1, y: 0 }}
