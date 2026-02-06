@@ -179,3 +179,49 @@ export const mockUsers: MockUser[] = [
     ],
   },
 ];
+
+// Generate additional mock users for pagination testing
+const firstNames = ["Rafael","Beatriz","Thiago","Camila","Lucas","Fernanda","Gustavo","Juliana","Mateus","Larissa","Diego","Patrícia","Bruno","Isabela","Vinícius","Amanda","Henrique","Tatiana","Felipe","Renata","André","Daniela","Marcelo","Vanessa","Leonardo","Natália","Ricardo","Priscila","Eduardo","Mariana"];
+const lastNames = ["Almeida","Barbosa","Cardoso","Duarte","Farias","Gomes","Lopes","Machado","Nascimento","Pereira","Ribeiro","Souza","Teixeira","Vieira","Moreira","Araújo","Correia","Freitas","Lima","Martins","Nunes","Pinto","Rocha","Santana","Torres","Castro","Campos","Dias","Melo","Monteiro"];
+const systemIds = ["contratos","clientes","logistica","barter"];
+const rolesBySystem: Record<string,string[]> = {
+  contratos: ["filial","gerencia_regional","gerencia_nacional","admin","analise_doc"],
+  clientes: ["filial","regional","nacional","especialista","key_account","admin"],
+  logistica: ["filial","regional","nacional","troca_notas","admin","logistico"],
+  barter: ["filial","regional","nacional","mesa","admin","especialista"],
+};
+const branchIds = ["matriz","rioverde","uberlandia","sinop","luisEduardo"];
+
+function seededRandom(seed: number) {
+  let s = seed;
+  return () => { s = (s * 16807 + 0) % 2147483647; return s / 2147483647; };
+}
+
+const generatedUsers: MockUser[] = [];
+for (let i = 0; i < 45; i++) {
+  const rand = seededRandom(i + 100);
+  const fn = firstNames[Math.floor(rand() * firstNames.length)];
+  const ln = lastNames[Math.floor(rand() * lastNames.length)];
+  const id = String(7 + i);
+  const accesses: UserAccess[] = systemIds.map((sysId) => {
+    const hasAccess = rand() > 0.35;
+    if (!hasAccess) return { systemId: sysId, role: null, branches: [] };
+    const roles = rolesBySystem[sysId];
+    const role = roles[Math.floor(rand() * roles.length)];
+    const numBranches = 1 + Math.floor(rand() * 3);
+    const shuffled = [...branchIds].sort(() => rand() - 0.5);
+    return { systemId: sysId, role, branches: shuffled.slice(0, numBranches) };
+  });
+  const day = 1 + Math.floor(rand() * 28);
+  generatedUsers.push({
+    id,
+    name: `${fn} ${ln}`,
+    email: `${fn.toLowerCase()}.${ln.toLowerCase()}@graodireto.com`,
+    phone: `(${60 + Math.floor(rand() * 40)}) 9${String(Math.floor(rand() * 9000 + 1000))}-${String(Math.floor(rand() * 9000 + 1000))}`,
+    status: rand() > 0.2 ? "active" : "inactive",
+    lastLogin: `2026-01-${String(day).padStart(2, "0")}T${String(8 + Math.floor(rand() * 10)).padStart(2, "0")}:${String(Math.floor(rand() * 60)).padStart(2, "0")}:00`,
+    accesses,
+  });
+}
+
+mockUsers.push(...generatedUsers);
