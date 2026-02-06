@@ -12,8 +12,11 @@ interface AppSidebarProps {
 export function AppSidebar({ system, collapsed }: AppSidebarProps) {
   const location = useLocation();
   const navigate = useNavigate();
+  const { notifications } = useNotifications();
 
-  if (!system) return null;
+  const systemUnread = system
+    ? notifications.filter((n) => !n.read && n.systemId === system.id).length
+    : 0;
 
   const sidebarWidth = collapsed ? "w-14" : "w-60";
 
