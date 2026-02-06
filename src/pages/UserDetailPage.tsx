@@ -1,11 +1,10 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowLeft, Save, ChevronDown, ChevronRight, X, Building2 } from "lucide-react";
 import { systems } from "@/data/systems";
 import { maskPhone, maskCpfCnpj } from "@/lib/masks";
 import {
-  mockUsers,
   mockBranches,
   mockRegionals,
   systemRoles,
@@ -14,6 +13,7 @@ import {
   type SystemRole,
   type UserAccess,
 } from "@/data/mock-users";
+import { useUsers } from "@/contexts/UsersContext";
 import { UserRoleBadge } from "@/components/UserRoleBadge";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
