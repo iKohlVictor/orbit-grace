@@ -1,4 +1,4 @@
-import { Menu, Bell, Search, ChevronDown, Home } from "lucide-react";
+import { Menu, Bell, Search, ChevronDown, Home, Users } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import logo from "@/assets/logo-grao-direto.svg";
 import { systems, type SystemConfig } from "@/data/systems";
