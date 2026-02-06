@@ -18,6 +18,8 @@ export function AppSidebar({ system, collapsed }: AppSidebarProps) {
     ? notifications.filter((n) => !n.read && n.systemId === system.id).length
     : 0;
 
+  if (!system) return null;
+
   const sidebarWidth = collapsed ? "w-14" : "w-60";
 
   return (
