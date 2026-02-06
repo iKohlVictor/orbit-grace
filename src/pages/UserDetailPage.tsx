@@ -3,6 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowLeft, Save, ChevronDown, ChevronRight, X, Building2 } from "lucide-react";
 import { systems } from "@/data/systems";
+import { maskPhone, maskCpfCnpj } from "@/lib/masks";
 import {
   mockUsers,
   mockBranches,
