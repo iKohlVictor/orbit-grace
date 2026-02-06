@@ -43,6 +43,11 @@ export function AppSidebar({ system, collapsed }: AppSidebarProps) {
             <span className="text-xs font-semibold tracking-wide uppercase text-sidebar-muted truncate">
               {system.shortName}
             </span>
+            {systemUnread > 0 && (
+              <span className="ml-auto h-5 min-w-[20px] rounded-full bg-destructive text-destructive-foreground text-[10px] font-bold flex items-center justify-center px-1.5">
+                {systemUnread}
+              </span>
+            )}
           </div>
         </div>
       )}
