@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useOutletContext } from "react-router-dom";
+import { type SystemConfig } from "@/data/systems";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Search,
