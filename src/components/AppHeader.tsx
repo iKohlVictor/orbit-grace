@@ -1,8 +1,9 @@
-import { Menu, Bell, Search, ChevronDown, Home, Users } from "lucide-react";
+import { Menu, Search, ChevronDown, Home, Users } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import logo from "@/assets/logo-grao-direto.svg";
 import { systems, type SystemConfig } from "@/data/systems";
 import { Button } from "@/components/ui/button";
+import { NotificationBell } from "@/components/NotificationBell";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -81,9 +82,7 @@ export function AppHeader({ activeSystem, onSelectSystem, onToggleSidebar }: App
       <Button variant="ghost" size="icon" onClick={() => navigate("/usuarios")} title="Usuários">
         <Users className="h-4.5 w-4.5" />
       </Button>
-      <Button variant="ghost" size="icon">
-        <Bell className="h-4.5 w-4.5" />
-      </Button>
+      <NotificationBell />
 
       <div className="h-8 w-8 rounded-full bg-primary flex items-center justify-center text-primary-foreground text-xs font-semibold">
         GD
