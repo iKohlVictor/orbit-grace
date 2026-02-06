@@ -266,15 +266,11 @@ export default function UserDetailPage() {
                               </SelectTrigger>
                               <SelectContent>
                                 <SelectItem value="none">Sem acesso</SelectItem>
-                                <SelectItem value="admin">
-                                  {roleLabels.admin}
-                                </SelectItem>
-                                <SelectItem value="editor">
-                                  {roleLabels.editor}
-                                </SelectItem>
-                                <SelectItem value="viewer">
-                                  {roleLabels.viewer}
-                                </SelectItem>
+                                {(systemRoles[sys.id] ?? []).map((r) => (
+                                  <SelectItem key={r.value} value={r.value}>
+                                    {r.label}
+                                  </SelectItem>
+                                ))}
                               </SelectContent>
                             </Select>
                           </div>
