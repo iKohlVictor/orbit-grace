@@ -8,10 +8,11 @@ import {
   mockUsers,
   mockBranches,
   mockRegionals,
+  systemRoles,
+  getRoleLabel,
   type MockUser,
   type SystemRole,
   type UserAccess,
-  roleLabels,
 } from "@/data/mock-users";
 import { UserRoleBadge } from "@/components/UserRoleBadge";
 import { Input } from "@/components/ui/input";
