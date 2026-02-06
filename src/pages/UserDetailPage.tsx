@@ -144,7 +144,7 @@ export default function UserDetailPage() {
                 id="phone"
                 placeholder="(00) 00000-0000"
                 value={form.phone}
-                onChange={(e) => updateField("phone", e.target.value)}
+                onChange={(e) => updateField("phone", maskPhone(e.target.value))}
               />
             </div>
             <div className="space-y-1.5">
