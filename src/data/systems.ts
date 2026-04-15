@@ -19,6 +19,10 @@ import {
   Repeat,
   Wheat,
   TrendingUp,
+  FileSignature,
+  PenTool,
+  Library,
+  ScrollText,
   type LucideIcon,
 } from "lucide-react";
 

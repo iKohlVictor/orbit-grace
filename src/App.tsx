@@ -11,6 +11,7 @@ import SystemPage from "./pages/SystemPage";
 import UsersPage from "./pages/UsersPage";
 import UserDetailPage from "./pages/UserDetailPage";
 import NotificationsPage from "./pages/NotificationsPage";
+import AssinaturasPage from "./pages/AssinaturasPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
