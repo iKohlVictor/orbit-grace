@@ -33,7 +33,7 @@ export function AppShell() {
       />
       <div className="flex flex-1 overflow-hidden">
         <AppSidebar system={activeSystem} collapsed={sidebarCollapsed} />
-        <main className="flex-1 overflow-y-auto p-6">
+        <main className="flex-1 overflow-y-auto">
           <Outlet context={{ activeSystem, setActiveSystem }} />
         </main>
       </div>
