@@ -211,12 +211,20 @@ export default function EnviarAssinaturaPage() {
           </CardHeader>
           <CardContent className="p-0">
             {pdfUrl && (
-              <iframe
-                src={pdfUrl}
-                className="w-full border-0"
+              <object
+                data={`${pdfUrl}#toolbar=1&navpanes=0`}
+                type="application/pdf"
+                className="w-full"
                 style={{ height: "calc(100vh - 260px)", minHeight: 500 }}
-                title="PDF Preview"
-              />
+              >
+                <div className="flex flex-col items-center justify-center py-16 gap-3 text-muted-foreground">
+                  <FileText className="h-10 w-10" />
+                  <p className="text-sm">Não foi possível exibir o PDF no navegador.</p>
+                  <a href={pdfUrl} download={pdfFile?.name} className="text-sm text-primary underline">
+                    Clique aqui para baixar
+                  </a>
+                </div>
+              </object>
             )}
           </CardContent>
         </Card>
