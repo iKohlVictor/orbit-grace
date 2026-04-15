@@ -1,5 +1,5 @@
 import { useState, useMemo } from "react";
-import { Send, FileText, Clock, CheckCircle2 } from "lucide-react";
+import { Send, FileText, Clock, CheckCircle2, Search, X } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
