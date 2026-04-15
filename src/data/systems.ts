@@ -66,6 +66,14 @@ export const systems: SystemConfig[] = [
         ],
       },
       {
+        label: "Documentos",
+        items: [
+          { title: "Assinaturas", icon: PenTool, path: "/contratos/assinaturas" },
+          { title: "Biblioteca", icon: Library, path: "/contratos/biblioteca" },
+          { title: "Minutas", icon: ScrollText, path: "/contratos/minutas" },
+        ],
+      },
+      {
         label: "Relatórios",
         items: [
           { title: "Dashboard", icon: BarChart3, path: "/contratos/dashboard" },
@@ -125,24 +133,6 @@ export const systems: SystemConfig[] = [
           { title: "Operações Barter", icon: Repeat, path: "/barter" },
           { title: "Insumos", icon: Wheat, path: "/barter/insumos" },
           { title: "Posições", icon: TrendingUp, path: "/barter/posicoes" },
-        ],
-      },
-    ],
-  },
-  {
-    id: "documentos",
-    name: "Gestão de Documentos",
-    shortName: "Documentos",
-    description: "Assinaturas, biblioteca e minutas de documentos",
-    icon: FileSignature,
-    colorVar: "--system-documentos",
-    groups: [
-      {
-        label: "Documentos",
-        items: [
-          { title: "Assinaturas", icon: PenTool, path: "/documentos/assinaturas" },
-          { title: "Biblioteca", icon: Library, path: "/documentos/biblioteca" },
-          { title: "Minutas", icon: ScrollText, path: "/documentos/minutas" },
         ],
       },
     ],
