@@ -92,7 +92,7 @@ export default function AssinaturasPage() {
             Gerencie os documentos enviados para assinatura
           </p>
         </div>
-        <Button className="gap-2">
+        <Button className="gap-2" onClick={() => navigate("/contratos/assinaturas/enviar")}>
           <Send className="h-4 w-4" />
           Enviar para Assinatura
         </Button>
