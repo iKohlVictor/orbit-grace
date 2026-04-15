@@ -15,6 +15,7 @@ import NotificationsPage from "./pages/NotificationsPage";
 import NotFound from "./pages/NotFound";
 
 const AssinaturasPage = React.lazy(() => import("./pages/AssinaturasPage"));
+const EnviarAssinaturaPage = React.lazy(() => import("./pages/EnviarAssinaturaPage"));
 
 const queryClient = new QueryClient();
 
