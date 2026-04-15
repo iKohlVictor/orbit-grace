@@ -19,6 +19,10 @@ import {
   Repeat,
   Wheat,
   TrendingUp,
+  FileSignature,
+  PenTool,
+  Library,
+  ScrollText,
   type LucideIcon,
 } from "lucide-react";
 
@@ -121,6 +125,24 @@ export const systems: SystemConfig[] = [
           { title: "Operações Barter", icon: Repeat, path: "/barter" },
           { title: "Insumos", icon: Wheat, path: "/barter/insumos" },
           { title: "Posições", icon: TrendingUp, path: "/barter/posicoes" },
+        ],
+      },
+    ],
+  },
+  {
+    id: "documentos",
+    name: "Gestão de Documentos",
+    shortName: "Documentos",
+    description: "Assinaturas, biblioteca e minutas de documentos",
+    icon: FileSignature,
+    colorVar: "--system-documentos",
+    groups: [
+      {
+        label: "Documentos",
+        items: [
+          { title: "Assinaturas", icon: PenTool, path: "/documentos/assinaturas" },
+          { title: "Biblioteca", icon: Library, path: "/documentos/biblioteca" },
+          { title: "Minutas", icon: ScrollText, path: "/documentos/minutas" },
         ],
       },
     ],
