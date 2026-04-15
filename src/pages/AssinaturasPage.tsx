@@ -50,6 +50,7 @@ function MiniBarChart({ value, total, color }: { value: number; total: number; c
 }
 
 export default function AssinaturasPage() {
+  const navigate = useNavigate();
   const [titular, setTitular] = useState("");
   const [codigo, setCodigo] = useState("");
   const [tipo, setTipo] = useState("all");
