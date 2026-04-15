@@ -15,6 +15,7 @@ import NotificationsPage from "./pages/NotificationsPage";
 import NotFound from "./pages/NotFound";
 
 const AssinaturasPage = React.lazy(() => import("./pages/AssinaturasPage"));
+const EnviarAssinaturaPage = React.lazy(() => import("./pages/EnviarAssinaturaPage"));
 
 const queryClient = new QueryClient();
 
@@ -31,6 +32,7 @@ const App = () => (
                 <Route element={<AppShell />}>
                   <Route path="/" element={<Index />} />
                   <Route path="/contratos/assinaturas" element={<AssinaturasPage />} />
+                  <Route path="/contratos/assinaturas/enviar" element={<EnviarAssinaturaPage />} />
                   <Route path="/contratos/*" element={<SystemPage />} />
                   <Route path="/clientes/*" element={<SystemPage />} />
                   <Route path="/logistica/*" element={<SystemPage />} />

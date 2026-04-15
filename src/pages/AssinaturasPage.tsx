@@ -1,4 +1,5 @@
 import { useState, useMemo } from "react";
+import { useNavigate } from "react-router-dom";
 import { Send, FileText, Clock, CheckCircle2, Search, X } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -49,6 +50,7 @@ function MiniBarChart({ value, total, color }: { value: number; total: number; c
 }
 
 export default function AssinaturasPage() {
+  const navigate = useNavigate();
   const [titular, setTitular] = useState("");
   const [codigo, setCodigo] = useState("");
   const [tipo, setTipo] = useState("all");
@@ -90,7 +92,7 @@ export default function AssinaturasPage() {
             Gerencie os documentos enviados para assinatura
           </p>
         </div>
-        <Button className="gap-2">
+        <Button className="gap-2" onClick={() => navigate("/contratos/assinaturas/enviar")}>
           <Send className="h-4 w-4" />
           Enviar para Assinatura
         </Button>
