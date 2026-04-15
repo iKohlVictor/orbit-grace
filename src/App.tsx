@@ -32,6 +32,7 @@ const App = () => (
                 <Route element={<AppShell />}>
                   <Route path="/" element={<Index />} />
                   <Route path="/contratos/assinaturas" element={<AssinaturasPage />} />
+                  <Route path="/contratos/assinaturas/enviar" element={<EnviarAssinaturaPage />} />
                   <Route path="/contratos/*" element={<SystemPage />} />
                   <Route path="/clientes/*" element={<SystemPage />} />
                   <Route path="/logistica/*" element={<SystemPage />} />
