@@ -132,7 +132,7 @@ export default function AssinaturasPage() {
 
       {/* Filters */}
       <Card>
-        <CardContent className="pt-6">
+        <CardContent className="pt-6 space-y-3">
           <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-3">
             <Input placeholder="Titular" value={titular} onChange={(e) => setTitular(e.target.value)} />
             <Input placeholder="Código" value={codigo} onChange={(e) => setCodigo(e.target.value)} />
@@ -162,6 +162,28 @@ export default function AssinaturasPage() {
             </Select>
             <Input type="date" value={dataInicio} onChange={(e) => setDataInicio(e.target.value)} placeholder="De" />
             <Input type="date" value={dataFim} onChange={(e) => setDataFim(e.target.value)} placeholder="Até" />
+          </div>
+          <div className="flex gap-2">
+            <Button variant="outline" className="gap-2">
+              <Search className="h-4 w-4" />
+              Pesquisar
+            </Button>
+            <Button
+              variant="ghost"
+              className="gap-2"
+              onClick={() => {
+                setTitular("");
+                setCodigo("");
+                setTipo("all");
+                setCriadoPor("all");
+                setStatus("all");
+                setDataInicio("");
+                setDataFim("");
+              }}
+            >
+              <X className="h-4 w-4" />
+              Limpar
+            </Button>
           </div>
         </CardContent>
       </Card>
